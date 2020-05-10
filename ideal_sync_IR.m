@@ -18,7 +18,7 @@ function IR_corr_sig = ideal_sync_IR(Fs)
 
     x_size = size(x);
 
-    ones_arr = ones(x_size(1) * 2,1)
+    ones_arr = ones(x_size(1) * 2,1);
     ones_arr = 256.* ones_arr;
 
     ones_arr(1:x_size(1)) = x;

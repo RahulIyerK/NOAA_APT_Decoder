@@ -75,3 +75,11 @@ r = xcorr(d,IR_correlation_signal);
 
 figure;
 plot(r);
+
+
+figure;
+x_analytic = hilbert(x);
+plot(abs(x_analytic));
+r2 = xcorr(abs(x_analytic),IR_correlation_signal);
+figure;
+plot(r2);

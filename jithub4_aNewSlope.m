@@ -53,7 +53,7 @@ edges = min_val:color_quantization:max_val;
 d = discretize(c, edges);%actual discretization
 
 %Squelching Discretized Color Signal
-squelch_threshold = 212;%value below which all signal amplitude is 0 
+squelch_threshold = 213;%value below which all signal amplitude is 0 
 x_sq = d;
 x_sq(x_sq < squelch_threshold) = 0;
 
@@ -65,6 +65,34 @@ x_sq(x_sq < squelch_threshold) = 0;
 %if not, then repeat on next peak
 
 
+size_sig = size(x_sq)
+lineStarts = zeros(size_sig);
+index = 1;
+count = 1;
+IR_correlation_signal = ideal_sync_IR(Fs);%find the ideal Pulse sequence
+correlationThreshold = 10000
+while index < (size_sig(1)-floor((7*(1/832))/dt))
+    peak_thresh = 220;
+    if(x_sq(index) > peak_thresh)
+        %detect the square wave
+        %view the length of the sync sequence. 
+        numSamples = floor((7*(1/832))/dt);%look at 1 sync worth of data
+        syncSig = x_sq(index:index+numSamples);
+        %plot(syncSig);
+        r = xcorr(syncSig,IR_correlation_signal);
+        i = max(r);
+        %plot(r);
+        if(r(2) >= correlationThreshold)
+            lineStarts(count) = index;
+            %plot(r)
+            count = count+1;
+            index = index + 4500;%skip forward about 250-400 ms
+        end
+    end
+    index = index+1;
+end
+
+sync_array = (lineStarts);
 %option b: 
 
 figure;
@@ -73,12 +101,14 @@ title("Discretized Data");
 figure;
 plot(x_sq);
 title("Squelched Data");
-figure;
-plot(r);
-title("Correlation with Discretized, Squelched Data");
-figure;
-plot(start_indices_FIR);
-title("Start Indices of Sync Pulses");
+hold on;
+graphArr = 256.*ones(size(sync_array));
+scatter(sync_array, graphArr);
+hold off;
+
+
+%sync_array contains the indices of the start frames of each sync sequence.
+%
 
 
 

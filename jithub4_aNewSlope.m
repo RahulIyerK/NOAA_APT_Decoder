@@ -70,6 +70,8 @@ lineStarts = zeros(size_sig);
 index = 1;
 count = 1;
 IR_correlation_signal = ideal_sync_IR(Fs);%find the ideal Pulse sequence
+figure;
+plot(IR_correlation_signal);
 correlationThreshold = 10000
 while index < (size_sig(1)-floor((7*(1/832))/dt))
     peak_thresh = 220;
@@ -86,7 +88,7 @@ while index < (size_sig(1)-floor((7*(1/832))/dt))
             lineStarts(count) = index;
             %plot(r)
             count = count+1;
-            index = index + 4500;%skip forward about 250-400 ms
+            index = index + 5500;%skip forward about 250-400 ms
         end
     end
     index = index+1;
@@ -113,7 +115,7 @@ hold off;
 sync_diff = diff(sync_array);
 
 num_sync_diff_rows = count-2;
-num_points_per_image_row = 4000;
+num_points_per_image_row = 5000;
 A = zeros(count, num_points_per_image_row);
 for i = 2:num_sync_diff_rows
     tsout = round(resample(d(sync_array(i,1):sync_array(i+1,1)),num_points_per_image_row-1,sync_diff(i,1)));

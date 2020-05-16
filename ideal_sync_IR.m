@@ -11,8 +11,8 @@
     square_wave_period = 1/832;
 
     t = linspace(0,2*pi*7,num_samples)';
-    x = 256.*(triangularPulse(t+pi)./2 + 0.5);
-   % plot(square_wave_period/(2*pi) * t,x);
+    x = 256.*(square(t+pi)./2 + 0.5);
+    %plot(square_wave_period/(2*pi) * t,x);
 
 
 

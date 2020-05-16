@@ -10,7 +10,7 @@ n=100;
 Wn = 0.4;
 b = fir1(n,Wn);
 
-c = filter(b,1,x_rekt);
+c = filter(b,1,x_rectified);
 figure;
 plot(c);
 

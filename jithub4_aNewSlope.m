@@ -92,7 +92,7 @@ while index < (size_sig(1)-floor((7*(1/832))/dt))
     index = index+1;
 end
 
-sync_array = (lineStarts);
+sync_array = lineStarts(1:(count-1),1);
 %option b: 
 
 figure;
@@ -109,6 +109,20 @@ hold off;
 
 %sync_array contains the indices of the start frames of each sync sequence.
 %
+
+sync_diff = diff(sync_array);
+
+num_sync_diff_rows = count-2;
+num_points_per_image_row = 4000;
+A = zeros(count, num_points_per_image_row);
+for i = 2:num_sync_diff_rows
+    tsout = round(resample(d(sync_array(i,1):sync_array(i+1,1)),num_points_per_image_row-1,sync_diff(i,1)));
+    K = mat2gray(tsout,[0 256]);
+    A(i,1:num_points_per_image_row) = K';
+    
+end
+
+imshow(A);
 
 
 

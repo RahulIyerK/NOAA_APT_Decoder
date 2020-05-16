@@ -112,18 +112,22 @@ hold off;
 %sync_array contains the indices of the start frames of each sync sequence.
 %
 
-sync_diff = diff(sync_array);
+sync_array_trunc = sync_array(round(count/6):round(count * 5/6));
+sync_diff = diff(sync_array_trunc);
 
-num_sync_diff_rows = count-2;
-num_points_per_image_row = 5000;
-A = zeros(count, num_points_per_image_row);
-for i = 2:num_sync_diff_rows
-    tsout = round(resample(d(sync_array(i,1):sync_array(i+1,1)),num_points_per_image_row-1,sync_diff(i,1)));
+[num_sync_diff_rows,num_sync_diff_cols] = size(sync_diff);
+filter_len = 2 * num_sync_diff_rows;
+num_points_per_image_row = filter_len + ceil(filter_len/min(sync_diff));
+
+A = zeros(num_sync_diff_rows, num_points_per_image_row);
+for i = 2:num_sync_diff_rows-1
+    tsout = round(resample(d(sync_array_trunc(i,1):sync_array_trunc(i+1,1)),filter_len,sync_diff(i,1)));
     K = mat2gray(tsout,[0 256]);
     A(i,1:num_points_per_image_row) = K';
     
 end
 
+figure;
 imshow(A);
 
 

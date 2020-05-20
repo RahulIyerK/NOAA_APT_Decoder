@@ -19,7 +19,7 @@ close all;
 
 
 close all
-[x,Fs] = audioread('090729 1428 noaa-18.wav');
+[x,Fs] = audioread('5-19-LONG.wav');
 %Assume that the audio is a continuous signal, with the part of the signal
 %with the highest snr near the center of the recording. 
 [M,N] = size(x);
@@ -42,7 +42,7 @@ title("AM Demodulated Message (no discretization)");
 
 %discretize the colors in the frame
 length_of_msg = size(c);
-frame = c(length_of_msg(1)/3:2*length_of_msg(1)/3);
+frame = c(length_of_msg(1)/4:length_of_msg(1)/3);%play with this to remove noise
 %use middle third of audio signal to get the ranges for colors
 max_val = max(frame); % black
 min_val = min(frame); % white
@@ -72,7 +72,8 @@ count = 1;
 IR_correlation_signal = ideal_sync_IR(Fs);%find the ideal Pulse sequence
 figure;
 plot(IR_correlation_signal);
-correlationThreshold = 10000
+correlationThreshold = 10000;
+skipStep = ceil(0.499/dt)
 while index < (size_sig(1)-floor((7*(1/832))/dt))
     peak_thresh = 220;
     if(x_sq(index) > peak_thresh)
@@ -88,7 +89,7 @@ while index < (size_sig(1)-floor((7*(1/832))/dt))
             lineStarts(count) = index;
             %plot(r)
             count = count+1;
-            index = index + 5500;%skip forward about 250-400 ms
+            index = index + skipStep;%skip forward about 0.5 s
         end
     end
     index = index+1;
